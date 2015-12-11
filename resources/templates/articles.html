@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+
+
+  <div id="todoapp">
+        <div class="container">
+            <div class="row">
+                <div class="page-header">
+                    <h1>发布全科咨询
+                        <small>各类咨询发布页面</small>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="create-todo" class="well">
+
+                    <form class="form-horizontal" ENCTYPE="multipart/form-data"    style="width:100%;" action="addarctile"  method="post">
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">标题:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                             <input type="text" class="form-control" placeholder="输入标题" name="title">
+                            </div>
+
+                       </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">图片:</label>
+                           <div class="col-sm-10" style="text-align:left;">
+                             <input accept="image/x-png,image/jpeg"     id="titleimage" name="titleimage" type="file" style="display:none">
+                             <a class="btn" onclick="$('input[id=titleimage]').click();">浏览</a>
+                             <img id="blah" width="100px;" height="100px;" src="#" alt="your image" />
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">类型:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                                <select  data-size="false" name="type">
+                                    <option value="0">全科专题</option>
+                                    <option value="1">重要活动</option>
+                                    <option value="2">社区之窗</option>
+                               </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">来源:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                                <select  data-size="false" name="source">
+                                    <option value="0">链接</option>
+                                    <option value="1">原创</option>
+                               </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">内容:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                               <textarea class="form-control" name="content" rows="3"></textarea>
+                            </div>
+
+                        </div>
+
+                        <div style="text-align:center;">
+                           <button type="submit" class="btn btn btn-primary">新增</button>
+                        </div>
+
+
+
+                   </form>
+
+
+
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <table id="todos" class="table table-bordered table-striped">
+                    <tbody id="todo-list">
+                     {% for article in articles %}
+                        <tr>
+                            <td>
+                                <div class="show-item row-fluid" style="valign:middle;">
+
+                                    <div class="todo-indicator pull-left item-buttons">
+                                        <span class="todo-done"></span>
+                                    </div>
+                                    <img width="40px;" height="40px;" src="/files/{{article.titleimage}}" />
+                                    <span class="todo-content">{{article.title}}</span>
+                                    <div class="pull-right item-buttons">
+                                        <span class="todo-edit"></span>
+                                        <span class="todo-destroy"></span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
