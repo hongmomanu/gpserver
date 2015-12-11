@@ -33,3 +33,11 @@
     (limit 50))
 
   )
+
+(defn get-articles-byid [oid]
+
+  (mc/find-map-by-id
+    db "arctiles" oid
+    )
+
+  )

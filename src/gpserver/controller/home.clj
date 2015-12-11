@@ -43,6 +43,21 @@
 
   )
 
+(defn arctiledetail [articleid]
+
+  (let [
+        article (db/get-articles-byid (ObjectId. articleid))
+
+        ]
+
+    (println article)
+
+    (layout/render "articleedit.html" {:articledetail article})
+    )
+
+
+  )
+
 (defn addarctile [title titleimage type source content]
 
 

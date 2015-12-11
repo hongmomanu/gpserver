@@ -9,25 +9,33 @@ $(document).ready(function () {
 
 
     });
-    $("body").on('click', '#todo-list .todo-destroy', function () {
-        $(this).closest("tr").remove();
-    });
+
+
+  $( "#todo-list .todo-destroy" ).click(function() {
+    $(this).closest("tr").remove();
+  });
+
+  $( "#todo-list .todo-edit" ).click(function() {
+
+    window.location="/article/"+$(this).attr("articleid");
+
+  });
 
 
   function readURL(input) {
 
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
+      if (input.files && input.files[0]) {
+          var reader = new FileReader();
 
-        reader.onload = function (e) {
-            $('#blah').attr('src', e.target.result);
-        }
+          reader.onload = function (e) {
+              $('#blah').attr('src', e.target.result);
+          }
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+          reader.readAsDataURL(input.files[0]);
+      }
+  }
 
-    $("#titleimage").change(function(){
+  $("#titleimage").change(function(){
         readURL(this);
     });
 

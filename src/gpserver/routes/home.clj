@@ -39,6 +39,12 @@
 
     )
 
+  (GET "/article/:articleid" [articleid]
+
+    (home/arctiledetail articleid)
+
+    )
+
   )
 
 
