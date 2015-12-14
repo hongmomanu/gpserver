@@ -24,6 +24,12 @@
 
   )
 
+(defn savearctile-by-oid [item oid]
+
+  (mc/update-by-id db "arctiles" oid {$set item})
+
+  )
+
 
 (defn get-articles [conds]
 
@@ -31,6 +37,16 @@
     (find conds)
     (sort {:time -1})
     (limit 50))
+
+  )
+
+(defn get-articles-by-cond [conds size]
+
+  (with-collection db "arctiles"
+    (find conds)
+    (sort {:time 1})
+    (limit size)
+    )
 
   )
 

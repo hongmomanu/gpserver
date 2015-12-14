@@ -18,7 +18,7 @@
             <div class="row">
                 <div  class="well">
 
-                    <form class="form-horizontal" ENCTYPE="multipart/form-data"    style="width:100%;" action="savearctile"  method="post">
+                    <form class="form-horizontal" ENCTYPE="multipart/form-data"    style="width:100%;" action="/savearctile"  method="post">
 
                       <div class="form-group">
 
@@ -26,7 +26,8 @@
 
                             <div class="col-sm-10" style="text-align:left;">
                              <input type="text" class="form-control" placeholder="输入标题" name="title" value="{{articledetail.title}}">
-                            </div>
+                            <input type="text" class="form-control" style="display:none;"   name="id" value="{{articledetail._id}}">
+                          </div>
 
                        </div>
 
@@ -43,10 +44,10 @@
                         <div class="form-group">
                           <label for="name" class="col-sm-2 control-label">类型:</label>
                             <div class="col-sm-10" style="text-align:left;">
-                                <select  data-size="false" name="type" value="{{articledetail.type}}">
-                                    <option value="0" selected="{{articledetail.type==0}}">全科专题</option>
-                                    <option value="1" selected="{{articledetail.type==1}}">重要活动</option>
-                                    <option value="2" selected="{{articledetail.type==2}}">社区之窗</option>
+                                <select  data-size="false" name="type">
+                                    <option value="0"  {% ifequal articledetail.type 0 %}selected{% else %}{% endifequal %}>全科专题</option>
+                                    <option value="1"  {% ifequal articledetail.type 1 %}selected{% else %}{% endifequal %}>重要活动</option>
+                                    <option value="2"  {% ifequal articledetail.type 2 %}selected{% else %}{% endifequal %}>社区之窗</option>
                                </select>
 
                             </div>
@@ -56,9 +57,9 @@
                         <div class="form-group">
                           <label for="name" class="col-sm-2 control-label">来源:</label>
                             <div class="col-sm-10" style="text-align:left;">
-                                <select  data-size="false" name="source" value="{{articledetail.source}}">
-                                    <option value="1" selected="{{articledetail.source==1}}" >原创</option>
-                                    <option value="0" selected="{{articledetail.source==0}}">链接</option>
+                                <select  data-size="false" name="source">
+                                    <option value="1" selected="{% ifequal articledetail.source 1 %}selected{% else %}{% endifequal %}" >原创</option>
+                                    <option value="0" selected="{% ifequal articledetail.source 0 %}selected{% else %}{% endifequal %}">链接</option>
 
                                </select>
 

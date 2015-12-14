@@ -50,7 +50,7 @@
 
         ]
 
-    (println article)
+
 
     (layout/render "articleedit.html" {:articledetail article})
     )
@@ -71,6 +71,62 @@
       ;(println filename)
       (nio/upload-file uploadpath  (conj titleimage {:filename filename}))
       (db/addarctile {:title title :titleimage filename :type type :source source :time (new Date) :content content})
+      (found "/articles")
+
+      )
+      )
+    (catch Exception ex
+
+      (found "/articles")
+      ))
+
+
+
+
+  )
+
+
+(defn getarticlesbytypeandtime [type time]
+
+  (let [
+        datetime (f/parse (f/formatters :date-time) time)
+        oneitem (first (db/get-articles-by-cond  {:time { $lte (.toDate datetime) }} 1))
+        ]
+     (if (nil? oneitem) (ok []) (db/get-articles-by-cond
+                                 {:time { $lte (.toDate datetime)}
+                                  :time { $gte (:time oneitem)}}  1000))
+
+    )
+
+
+  )
+
+(defn savearctile [title titleimage type source content id]
+
+
+
+  (try
+      (do
+       (let [
+          uploadpath  (str commonfunc/datapath "upload/")
+          timenow (c/to-long  (l/local-now))
+          filename (str timenow (:filename titleimage) )
+          ]
+      ;(println filename)
+       (if (= (:size titleimage)0)
+
+         (db/savearctile-by-oid {:title title   :type type :source source :time (new Date) :content content} (ObjectId. id))
+
+         (do (nio/upload-file uploadpath  (conj titleimage {:filename filename}))
+             (db/savearctile-by-oid {:title title :titleimage filename :type type :source source :time (new Date) :content content} (ObjectId. id))
+           )
+
+
+         )
+
+
+
+
       (found "/articles")
 
       )

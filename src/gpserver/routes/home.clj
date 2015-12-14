@@ -26,9 +26,18 @@
 
   (GET "/articles" [] (home/articles-page))
 
+  (GET "/getarticlesbytypeandtime" [type time] (home/getarticlesbytypeandtime type time))
+
+
   (POST "/addarctile" [title titleimage type source content]
 
         (home/addarctile title titleimage type source content)
+
+        )
+
+  (POST "/savearctile" [title titleimage type source content id]
+
+        (home/savearctile title titleimage type source content id)
 
         )
 
