@@ -25,7 +25,7 @@ show collections
 db.users.insert({
 username : "dkr",
 realname : "董康然",
-type:"0",
+usertype:"1",
 password:"1"
 })
 

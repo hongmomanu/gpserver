@@ -24,9 +24,58 @@
 
   )
 
+(defn add-new-user [item]
+
+  (mc/insert-and-return db "users" item)
+
+  )
+
+
+(defn get-unreadmsg-by-uid [cond]
+  (mc/find-maps
+    db "messages" cond
+    )
+
+  )
+
+
+
 (defn savearctile-by-oid [item oid]
 
   (mc/update-by-id db "arctiles" oid {$set item})
+
+  )
+
+
+(defn update-group-message-byid [oid data]
+   (mc/update-by-id db "messages" oid {$push data})
+  )
+
+(defn update-message-byid [oid data]
+   (mc/update-by-id db "messages" oid {$set data})
+  )
+
+
+(defn get-message [conds size]
+  (with-collection db "messages"
+    (find conds)
+    (sort {:time -1})
+    (limit size))
+
+  )
+
+(defn insert-message [item]
+
+  (mc/insert-and-return db "messages" item)
+
+  )
+
+
+(defn get-users-by-cond [cond]
+
+  (mc/find-maps
+    db "users" cond
+    )
 
   )
 
@@ -43,6 +92,7 @@
 (defn get-articles-by-cond [conds size]
 
   (with-collection db "arctiles"
+     (fields [:_id :title :time :titleimage :source])
     (find conds)
     (sort {:time 1})
     (limit size)

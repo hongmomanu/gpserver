@@ -20,7 +20,7 @@
             [clojure.data.json :as json]
             [monger.json]
             [taoensso.timbre :as timbre]
-             [monger.operators :refer [$gt $lt $and $ne $push $or $nin $in]]
+             [monger.operators :refer [$gt $gte $lt $lte $and $ne $push $or $nin $in]]
             [cheshire.core :refer :all]
             [clj-time.core :as t]
             [clj-time.format :as f]
@@ -58,6 +58,149 @@
 
   )
 
+(defn get-group-message-history [fromid groupid time]
+
+
+  (let [
+        datetime (f/parse (f/formatters :date-time-no-ms) time)
+        ]
+
+    (db/get-message {$and [{:groupid  groupid } {:time { $lt (.toDate datetime) }} ]} 10)
+    )
+
+
+  )
+
+(defn send-message-online-group [userid msg ]
+
+  (doseq [channel (keys @websocket/channel-hub)]
+    (when (= (get  (get @websocket/channel-hub channel) "userid") userid)
+
+      (do
+        (timbre/info "send-message-online : " msg )
+
+        (send! channel (generate-string
+                       {
+
+                         :data  msg
+                         :type "message"
+                         }
+                       )
+        false)
+
+        (db/update-group-message-byid (:_id msg)  {:userids userid})
+
+        )
+
+
+
+      )
+    )
+
+
+  )
+
+(defn send-message-online [userid msg ]
+
+  (doseq [channel (keys @websocket/channel-hub)]
+    (when (= (get  (get @websocket/channel-hub channel) "userid") userid)
+
+      (do
+        (timbre/info "send-message-online : " msg )
+
+        (send! channel (generate-string
+                       {
+
+                         :data  msg
+                         :type "message"
+                         }
+                       )
+        false)
+
+        (db/update-message-byid (:_id msg) {:isread true})
+        )
+
+
+
+      )
+    )
+
+
+  )
+
+
+(defn getunreadmessages [userid usertype]
+
+  (let [
+        ;unreadperson (db/get-unreadmsg-by-uid {:toid userid :isread false})
+
+
+
+        unreadgroups (db/get-unreadmsg-by-uid {:toid usertype :userids {$nin [userid]}})
+
+        msgs unreadgroups ;(concat unreadperson unreadgroups)
+
+        ]
+     (dorun (map #(send-message-online  userid %) msgs))
+
+     (dorun (map #(db/update-group-message-byid (:_id %)  {:userids userid}) unreadgroups))
+
+     (ok {:success true} )
+   )
+
+  )
+
+(defn addgroupmessage [content ftype fromid toid groupid mtype toname fromname]
+
+  (try
+
+
+    (let [
+          item (db/insert-message
+                {
+                 :content content :ftype ftype
+                 :fromid fromid :toid toid :isread false
+                 :toname toname :fromname fromname :userids []
+                 :groupid groupid :mtype mtype :time (new Date)
+                 }
+             )
+
+          groupitems (db/get-users-by-cond {$and [{:usertype groupid} {:_id {$ne (ObjectId. fromid)}}]})
+
+          ]
+
+      (dorun (map #(send-message-online-group (str (:_id %)) item) groupitems))
+      (db/update-group-message-byid (:_id item)  {:userids fromid})
+
+
+      (ok {:success true :data item})
+
+      )
+
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+  )
+
+
+
+(defn getarticlebyid [articleid]
+
+  (let [
+        article (db/get-articles-byid (ObjectId. articleid))
+
+        ]
+
+
+
+     (ok article)
+    )
+
+  )
+
 (defn addarctile [title titleimage type source content]
 
 
@@ -84,17 +227,62 @@
 
 
   )
+(defn login [username password]
 
+  (try
+      (let [
+             item (db/get-users-by-cond {:username username :password password})
+             ]
+
+      (do
+        (if (empty? item)
+          (ok {:success false :message "用户或密码错误"})
+          (ok {:success true :message "登录成功" :user (first item) })
+          )
+
+        )
+      )
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+  )
+
+(defn newuser [username realname password usertype]
+
+  (try
+      (let [
+             item (db/get-users-by-cond {:username username})
+             ]
+
+      (do
+        (if (empty? item)
+          (ok {:success true  :user (db/add-new-user {:username username :realname realname
+                                                      :password password :usertype usertype
+                                                      })})
+          (ok {:success false :message "用户已存在"  })
+          )
+
+        )
+      )
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+  )
 
 (defn getarticlesbytypeandtime [type time]
 
   (let [
         datetime (f/parse (f/formatters :date-time) time)
-        oneitem (first (db/get-articles-by-cond  {:time { $lte (.toDate datetime) }} 1))
+        oneitem (first (db/get-articles-by-cond  {:time { $lte (.toDate datetime) } :type type} 1))
         ]
-     (if (nil? oneitem) (ok []) (db/get-articles-by-cond
-                                 {:time { $lte (.toDate datetime)}
-                                  :time { $gte (:time oneitem)}}  1000))
+     (if (nil? oneitem) (ok {:success false}) (ok {:success true :time (:time oneitem) :data (db/get-articles-by-cond
+                                 {:type type :time { $gte (:time oneitem) $lte (.toDate datetime)}}  1000)}))
 
     )
 
