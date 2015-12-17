@@ -54,3 +54,16 @@ isread:false,
 ftype:'text',
 mtype:"0"
 })
+
+
+--在线课堂表
+db.onlineclass.insert({
+title : "hello",
+classtime:"",
+place:"",
+userid:"",
+realname:"",
+livepath:"",
+time:new Date()
+
+})
