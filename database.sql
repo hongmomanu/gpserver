@@ -67,3 +67,12 @@ livepath:"",
 time:new Date()
 
 })
+
+
+--学分课程表
+db.studypoints.insert({
+      title : "hello",
+      videofile:"",
+      points:"",
+
+})

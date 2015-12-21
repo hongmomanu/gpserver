@@ -22,6 +22,17 @@ $(document).ready(function () {
   });
 
 
+  $( "#studypoint-list .todo-destroy" ).click(function() {
+    $(this).closest("tr").remove();
+  });
+
+  $( "#studypoint-list .todo-edit" ).click(function() {
+
+    window.location="/studypoint/"+$(this).attr("studypointid");
+
+  });
+
+
   function readURL(input) {
 
       if (input.files && input.files[0]) {

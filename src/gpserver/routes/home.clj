@@ -51,7 +51,16 @@
 
   (GET "/articles" [] (home/articles-page))
 
+  (GET "/studypoints" [] (home/studypoints-page))
+
   (GET "/getarticlesbytypeandtime" [type time] (home/getarticlesbytypeandtime type time))
+
+
+  (POST "/addstudypoint" [title videofile point timelong]
+
+        (home/addstudypoint title videofile point timelong)
+
+        )
 
 
   (POST "/addarctile" [title titleimage type source content]
@@ -65,6 +74,12 @@
   (POST "/savearctile" [title titleimage type source content id]
 
         (home/savearctile title titleimage type source content id)
+
+        )
+
+  (POST "/savestudypoint" [title videofile point timelong  id]
+
+        (home/savestudypoint title videofile point timelong  id)
 
         )
 
@@ -134,6 +149,49 @@
     (home/arctiledetail articleid)
 
     )
+  (GET "/studypoint/:studypointid" [studypointid]
+
+    (home/studypointdetail studypointid)
+
+    )
+
+  (GET "/addnewclass" [userid realname title classtime place]
+
+    (home/addnewclass userid realname title classtime place)
+
+    )
+
+
+
+  (GET "/getonlineclasses" [page]
+
+    (home/getonlineclasses page)
+
+    )
+
+
+
+  (GET "/updateonlineclassestate" [id state]
+
+    (home/updateonlineclassestate id state)
+
+    )
+
+
+  (GET "/deleteonlineclassestate" [id]
+
+    (home/deleteonlineclassestate id)
+
+    )
+
+
+
+
+
+
+
+
+
 
   (GET "/getarticlebyid" [articleid]
 

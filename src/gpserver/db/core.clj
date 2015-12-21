@@ -24,9 +24,22 @@
 
   )
 
+(defn addstudypoint[item]
+
+  (mc/insert-and-return db "studypoints" item)
+
+  )
+
 (defn add-new-user [item]
 
   (mc/insert-and-return db "users" item)
+
+  )
+
+
+(defn insert-newclass [item]
+
+  (mc/insert-and-return db "onlineclass" item)
 
   )
 
@@ -46,13 +59,40 @@
 
   )
 
+(defn savestudypoint-by-oid [item oid]
+
+  (mc/update-by-id db "studypoints" oid {$set item})
+  )
+
 
 (defn update-group-message-byid [oid data]
    (mc/update-by-id db "messages" oid {$push data})
   )
 
+(defn update-onlineclass-state-byid [oid data]
+
+  (mc/update-by-id db "onlineclass" oid {$set data})
+
+  )
+
+(defn delete-onlineclass-byid [oid]
+
+  (mc/remove-by-id db "onlineclass"  oid)
+
+  )
+
 (defn update-message-byid [oid data]
    (mc/update-by-id db "messages" oid {$set data})
+  )
+
+(defn get-onlineclass-bystart  [startpage]
+
+  (with-collection db "onlineclass"
+
+    (sort {:time -1})
+    (paginate :page startpage :per-page 10))
+
+
   )
 
 
@@ -89,6 +129,16 @@
 
   )
 
+
+(defn get-studypoints [conds]
+
+  (with-collection db "studypoints"
+    (find conds)
+    (sort {:time -1})
+    (limit 50))
+
+  )
+
 (defn get-articles-by-cond [conds size]
 
   (with-collection db "arctiles"
@@ -104,6 +154,14 @@
 
   (mc/find-map-by-id
     db "arctiles" oid
+    )
+
+  )
+
+(defn get-studypoints-byid [oid]
+
+  (mc/find-map-by-id
+    db "studypoints" oid
     )
 
   )

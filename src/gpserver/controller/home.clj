@@ -43,6 +43,20 @@
 
   )
 
+(defn studypoints-page []
+
+  (let [
+        studypoints (db/get-studypoints {})
+
+        ]
+
+    (layout/render "studypoints.html" {:studypoints studypoints})
+    )
+
+  )
+
+
+
 (defn arctiledetail [articleid]
 
   (let [
@@ -55,6 +69,19 @@
     (layout/render "articleedit.html" {:articledetail article})
     )
 
+
+  )
+
+(defn studypointdetail [studypointid]
+  (let [
+        article (db/get-studypoints-byid (ObjectId. studypointid))
+
+        ]
+
+
+
+    (layout/render "studypointdedit.html" {:studypointdetail article})
+    )
 
   )
 
@@ -150,6 +177,89 @@
 
   )
 
+
+(defn updateonlineclassestate [id state]
+
+  (try
+
+
+
+      (do
+        (db/update-onlineclass-state-byid (ObjectId. id) {:state (read-string state)})
+        (ok {:success true})
+        )
+
+
+
+
+
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+
+  )
+
+(defn deleteonlineclassestate [id]
+  (try
+
+
+
+      (do
+        (db/delete-onlineclass-byid (ObjectId. id) )
+        (ok {:success true})
+        )
+
+
+
+
+
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+  )
+
+(defn addnewclass [userid realname title classtime place]
+
+  (try
+
+
+    (let [
+          item (db/insert-newclass
+                {
+                 :userid userid :realname realname
+                 :title title :classtime classtime :state 0
+                 :place place :time (new Date)
+                 }
+             )
+
+
+          ]
+
+
+      (ok {:success true })
+
+      )
+
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+  )
+
+(defn getonlineclasses [startpage]
+
+  (ok (db/get-onlineclass-bystart  (read-string startpage)))
+
+  )
+
 (defn addgroupmessage [content ftype fromid toid groupid mtype toname fromname]
 
   (try
@@ -227,6 +337,31 @@
 
 
   )
+
+(defn addstudypoint [title videofile point timelong]
+
+  (try
+      (do
+       (let [
+          uploadpath  (str commonfunc/datapath "upload/")
+          timenow (c/to-long  (l/local-now))
+          filename (str timenow (:filename videofile) )
+          ]
+
+      (nio/upload-file uploadpath  (conj videofile {:filename filename}))
+      (db/addstudypoint {:title title :videofile filename :point point :timelong timelong :time (new Date) })
+      (found "/studypoints")
+
+      )
+      )
+    (catch Exception ex
+
+      (found "/studypoints")
+      ))
+
+  )
+
+
 (defn login [username password]
 
   (try
@@ -324,6 +459,42 @@
       (found "/articles")
       ))
 
+
+
+
+  )
+
+(defn savestudypoint [title videofile point timelong  id]
+    (try
+      (do
+       (let [
+          uploadpath  (str commonfunc/datapath "upload/")
+          timenow (c/to-long  (l/local-now))
+          filename (str timenow (:filename videofile) )
+          ]
+
+       (if (= (:size videofile)0)
+
+         (db/savestudypoint-by-oid {:title title   :point point :timelong timelong :time (new Date) } (ObjectId. id))
+
+         (do (nio/upload-file uploadpath  (conj videofile {:filename filename}))
+             (db/savestudypoint-by-oid {:title title :videofile filename :point point :timelong timelong :time (new Date)} (ObjectId. id))
+           )
+
+
+         )
+
+
+
+
+      (found "/studypoints")
+
+      )
+      )
+    (catch Exception ex
+
+      (found "/studypoints")
+      ))
 
 
 

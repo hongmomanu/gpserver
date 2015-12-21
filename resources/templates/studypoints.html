@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+
+
+  <div id="todoapp">
+        <div class="container">
+            <div class="row">
+                <div class="page-header">
+                    <h1>发布学分课程
+                        <small>学分课程发布页面</small>
+                    </h1>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="create-todo" class="well">
+
+                    <form class="form-horizontal" ENCTYPE="multipart/form-data"    style="width:100%;" action="addstudypoint"  method="post">
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">标题:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                             <input type="text" class="form-control" placeholder="输入标题" name="title">
+                            </div>
+
+                       </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">视频:</label>
+                           <div class="col-sm-10" style="text-align:left;">
+                             <input accept="*"  id="videofile" name="videofile" type="file" style="display:none">
+                             <a class="btn" onclick="$('input[id=videofile]').click();">浏览</a>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">学分:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                               <select  data-size="false" name="point">
+                                    <option value="0">无学分</option>
+                                    <option value="1">1学分</option>
+                                    <option value="2">2学分</option>
+                                    <option value="3">3学分</option>
+                                    <option value="4">4学分</option>
+                                    <option value="5">5学分</option>
+                               </select>
+
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+                          <label for="name" class="col-sm-2 control-label">学习时长:</label>
+                            <div class="col-sm-10" style="text-align:left;">
+                                <select  data-size="false" name="timelong">
+                                    <option value="30">半小时</option>
+                                    <option value="60">1小时</option>
+                                    <option value="120">2小时</option>
+                               </select>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div style="text-align:center;">
+                           <button type="submit" class="btn btn btn-primary">新增</button>
+                        </div>
+
+
+
+                   </form>
+
+
+
+                </div>
+            </div>
+
+
+
+            <div class="row">
+                <table id="studypointtodos" class="table table-bordered table-striped">
+                    <tbody id="studypoint-list">
+                     {% for studypoint in studypoints %}
+                        <tr>
+                            <td>
+                                <div class="show-item row-fluid" style="valign:middle;">
+
+                                    <div class="todo-indicator pull-left item-buttons">
+                                        <span class="todo-done"></span>
+                                    </div>
+
+                                    <span class="todo-content">{{studypoint.title}}</span>
+                                    <div class="pull-right item-buttons">
+                                        <span class="todo-edit" studypointid="{{studypoint._id}}"></span>
+                                        <span class="todo-destroy"></span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
