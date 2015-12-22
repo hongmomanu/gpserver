@@ -285,9 +285,25 @@
 
   )
 
-(defn getstudypoints [startpage]
+(defn getstudypoints [startpage userid]
 
-  (ok (db/get-studypoints-bystart  (read-string startpage)))
+  (let [
+        studypoints (db/get-studypoints-bystart  (read-string startpage))
+
+        results (map #(conj % (let [
+                                    userdata (db/get-userstudypoint-byids  (str (:_id %)) userid)
+                                    ]
+
+                                (if (nil? userdata) {} {:userdata userdata})
+
+                                )) studypoints)
+
+        ]
+
+    (ok results )
+    )
+
+
 
   )
 
@@ -296,6 +312,20 @@
 
   (ok (db/get-studypoints-byid  (ObjectId. studypointid)))
 
+
+  )
+
+(defn getusertotalpointsbyuid [userid]
+
+  (let [
+        items (db/get-userstudypoint-by-cond   {:userid userid} )
+
+        totalpoints (apply + (map #(read-string (:point (db/get-studypoints-byid  (ObjectId. (:studypointid %)))))  items))
+        ]
+
+      (ok {:totalpoints totalpoints})
+
+    )
 
   )
 

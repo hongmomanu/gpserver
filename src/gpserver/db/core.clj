@@ -206,3 +206,12 @@
     )
 
   )
+
+(defn get-userstudypoint-by-cond [cond]
+  (mc/find-maps
+    db "userstudypoint" cond
+    )
+
+  )
+
+

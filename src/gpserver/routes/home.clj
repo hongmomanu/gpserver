@@ -170,9 +170,9 @@
     )
 
 
-  (GET "/getstudypoints" [page]
+  (GET "/getstudypoints" [page userid]
 
-    (home/getstudypoints page)
+    (home/getstudypoints page userid)
 
     )
 
@@ -201,6 +201,12 @@
 
        (home/applyforstudypoint studyid userid)
 
+
+       )
+
+
+  (GET "/getusertotalpointsbyuid" [userid]
+       (home/getusertotalpointsbyuid userid)
 
        )
 
