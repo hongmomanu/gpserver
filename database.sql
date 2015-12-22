@@ -76,3 +76,13 @@ db.studypoints.insert({
       points:"",
 
 })
+
+--用户学分表
+db.userstudypoint.insert({
+      studypointid : "hello",
+      userid:"",
+      timelearn:""
+
+
+})
+

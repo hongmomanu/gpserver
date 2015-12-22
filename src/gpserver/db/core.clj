@@ -36,6 +36,12 @@
 
   )
 
+(defn add-new-userstudypoint [item]
+
+  (mc/insert-and-return db "userstudypoint" item)
+
+  )
+
 
 (defn insert-newclass [item]
 
@@ -48,7 +54,6 @@
   (mc/find-maps
     db "messages" cond
     )
-
   )
 
 
@@ -62,11 +67,14 @@
 (defn savestudypoint-by-oid [item oid]
 
   (mc/update-by-id db "studypoints" oid {$set item})
+
   )
 
 
 (defn update-group-message-byid [oid data]
-   (mc/update-by-id db "messages" oid {$push data})
+
+  (mc/update-by-id db "messages" oid {$push data})
+
   )
 
 (defn update-onlineclass-state-byid [oid data]
@@ -95,6 +103,18 @@
 
   )
 
+(defn get-studypoints-bystart  [startpage]
+
+  (with-collection db "studypoints"
+
+    (sort {:time -1})
+    (paginate :page startpage :per-page 10))
+
+
+  )
+
+
+
 
 (defn get-message [conds size]
   (with-collection db "messages"
@@ -116,6 +136,13 @@
   (mc/find-maps
     db "users" cond
     )
+
+  )
+
+(defn update-studypoint-byid [oid data]
+
+
+  (mc/update-by-id db "studypoints" oid data)
 
   )
 
@@ -158,10 +185,19 @@
 
   )
 
+
+
 (defn get-studypoints-byid [oid]
 
   (mc/find-map-by-id
     db "studypoints" oid
+    )
+
+  )
+
+(defn get-userstudypoint-byids   [studypointid userid]
+  (mc/find-one-as-map
+    db "userstudypoint" {:studypointid studypointid :userid userid}
     )
 
   )

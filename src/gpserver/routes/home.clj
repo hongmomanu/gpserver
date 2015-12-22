@@ -170,6 +170,41 @@
     )
 
 
+  (GET "/getstudypoints" [page]
+
+    (home/getstudypoints page)
+
+    )
+
+
+  (GET "/getstudypointbyid" [studypointid]
+
+    (home/getstudypointbyid studypointid)
+
+    )
+
+
+  (GET "/getuserstudypoint" [studypointid userid]
+
+    (home/getuserstudypoint studypointid userid)
+
+    )
+
+
+
+
+
+
+  (GET "/applyforstudypoint" [studyid userid]
+
+       (home/applyforstudypoint studyid userid)
+
+
+       )
+
+
+
+
 
   (GET "/updateonlineclassestate" [id state]
 

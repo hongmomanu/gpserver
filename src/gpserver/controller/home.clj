@@ -80,7 +80,7 @@
 
 
 
-    (layout/render "studypointdedit.html" {:studypointdetail article})
+    (layout/render "studypointedit.html" {:studypointdetail article})
     )
 
   )
@@ -202,6 +202,31 @@
 
   )
 
+
+(defn applyforstudypoint [studyid userid]
+  (try
+
+
+
+      (do
+        (db/update-studypoint-byid (ObjectId. studyid)  {$push {:userids userid}}  )
+
+        (db/add-new-userstudypoint {:studypointid studyid :userid userid :timelearn 0})
+
+        (ok {:success true})
+        )
+
+
+
+      (catch Exception ex
+        (ok {:success false :message (.getMessage ex)})
+        )
+
+    )
+
+
+  )
+
 (defn deleteonlineclassestate [id]
   (try
 
@@ -259,6 +284,30 @@
   (ok (db/get-onlineclass-bystart  (read-string startpage)))
 
   )
+
+(defn getstudypoints [startpage]
+
+  (ok (db/get-studypoints-bystart  (read-string startpage)))
+
+  )
+
+(defn getstudypointbyid [studypointid]
+
+
+  (ok (db/get-studypoints-byid  (ObjectId. studypointid)))
+
+
+  )
+
+
+(defn getuserstudypoint [studypointid userid]
+
+
+  (ok (db/get-userstudypoint-byids  studypointid userid))
+
+
+  )
+
 
 (defn addgroupmessage [content ftype fromid toid groupid mtype toname fromname]
 
@@ -349,7 +398,9 @@
           ]
 
       (nio/upload-file uploadpath  (conj videofile {:filename filename}))
-      (db/addstudypoint {:title title :videofile filename :point point :timelong timelong :time (new Date) })
+
+      (db/addstudypoint {:title title :videofile filename :userids []  :point point :timelong timelong :time (new Date) })
+
       (found "/studypoints")
 
       )
@@ -357,9 +408,13 @@
     (catch Exception ex
 
       (found "/studypoints")
+
       ))
 
   )
+
+
+
 
 
 (defn login [username password]
@@ -394,7 +449,7 @@
 
       (do
         (if (empty? item)
-          (ok {:success true  :user (db/add-new-user {:username username :realname realname
+          (ok {:success true  :user (db/add-new-user {:username username :realname realname :money 0
                                                       :password password :usertype usertype
                                                       })})
           (ok {:success false :message "用户已存在"  })
