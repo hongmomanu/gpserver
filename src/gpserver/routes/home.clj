@@ -195,6 +195,8 @@
 
 
 
+
+
   (GET "/applyforstudypoint" [studyid userid]
 
        (home/applyforstudypoint studyid userid)
@@ -211,6 +213,12 @@
     (home/updateonlineclassestate id state)
 
     )
+
+  (GET "/updateuserstudypointlearntime" [id timelearn]
+
+       (home/updateuserstudypointlearntime id timelearn)
+
+       )
 
 
   (GET "/deleteonlineclassestate" [id]

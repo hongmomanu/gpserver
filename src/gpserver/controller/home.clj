@@ -299,6 +299,29 @@
 
   )
 
+(defn updateuserstudypointlearntime [id timelearn]
+  (try
+
+
+
+      (do
+        (db/update-userstudypoint-byid (ObjectId. id)  {:timelearn (read-string timelearn)})
+
+        (ok {:success true})
+        )
+
+
+
+      (catch Exception ex
+
+        (ok {:success false :message (.getMessage ex)})
+
+        )
+
+    )
+
+  )
+
 
 (defn getuserstudypoint [studypointid userid]
 

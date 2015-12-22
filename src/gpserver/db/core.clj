@@ -142,7 +142,12 @@
 (defn update-studypoint-byid [oid data]
 
 
-  (mc/update-by-id db "studypoints" oid data)
+  (mc/update-by-id db "studypoints" oid {$set data})
+
+  )
+
+(defn update-userstudypoint-byid [oid data]
+  (mc/update-by-id db "userstudypoint" oid {$set data})
 
   )
 
