@@ -249,6 +249,13 @@
     )
 
 
+  (GET "/updateusercardbyid" [dutyid personid userid]
+
+    (home/updateusercardbyid dutyid personid userid)
+
+    )
+
+
   )
 
 

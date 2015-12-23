@@ -152,6 +152,14 @@
   )
 
 
+
+(defn update-user-byid [oid data]
+
+  (mc/update-by-id db "users" oid {$set data})
+
+  )
+
+
 (defn get-articles [conds]
 
   (with-collection db "arctiles"
@@ -171,12 +179,12 @@
 
   )
 
-(defn get-articles-by-cond [conds size]
+(defn get-articles-by-cond [conds size asort]
 
   (with-collection db "arctiles"
      (fields [:_id :title :time :titleimage :source])
     (find conds)
-    (sort {:time 1})
+    (sort {:time asort})
     (limit size)
     )
 

@@ -318,9 +318,16 @@
 (defn getusertotalpointsbyuid [userid]
 
   (let [
-        items (db/get-userstudypoint-by-cond   {:userid userid} )
+        items (db/get-userstudypoint-by-cond   {:userid userid } )
 
-        totalpoints (apply + (map #(read-string (:point (db/get-studypoints-byid  (ObjectId. (:studypointid %)))))  items))
+        detailitmes (map #(conj % {:detaildata (db/get-studypoints-byid  (ObjectId. (:studypointid %)))}) items)
+
+
+
+        filteritems (filter (fn [x](>= (:timelearn x) (read-string (-> x  :detaildata :timelong))))
+                                        detailitmes)
+
+        totalpoints (apply + (map #(read-string (-> % :detaildata :point ))  filteritems))
         ]
 
       (ok {:totalpoints totalpoints})
@@ -335,9 +342,11 @@
 
 
       (do
+
         (db/update-userstudypoint-byid (ObjectId. id)  {:timelearn (read-string timelearn)})
 
         (ok {:success true})
+
         )
 
 
@@ -493,6 +502,32 @@
 
   )
 
+(defn updateusercardbyid [dutyid personid userid]
+  (try
+
+
+
+      (do
+
+        (db/update-user-byid (ObjectId. userid)  {:dutyid dutyid :personid personid})
+
+        (ok {:success true})
+
+        )
+
+
+
+      (catch Exception ex
+
+        (ok {:success false :message (.getMessage ex)})
+
+        )
+
+    )
+
+
+  )
+
 (defn newuser [username realname password usertype]
 
   (try
@@ -503,7 +538,7 @@
       (do
         (if (empty? item)
           (ok {:success true  :user (db/add-new-user {:username username :realname realname :money 0
-                                                      :password password :usertype usertype
+                                                      :password password :usertype usertype :personid "" :dutyid ""
                                                       })})
           (ok {:success false :message "用户已存在"  })
           )
@@ -522,10 +557,14 @@
 
   (let [
         datetime (f/parse (f/formatters :date-time) time)
-        oneitem (first (db/get-articles-by-cond  {:time { $lte (.toDate datetime) } :type type} 1))
+        items (db/get-articles-by-cond  {:time { $lte (.toDate datetime) } :type type} 1 -1)
+
+        oneitem (first items)
+
+
         ]
      (if (nil? oneitem) (ok {:success false}) (ok {:success true :time (:time oneitem) :data (db/get-articles-by-cond
-                                 {:type type :time { $gte (:time oneitem) $lte (.toDate datetime)}}  1000)}))
+                                 {:type type :time { $lte (:time oneitem) $gte (.toDate (f/parse (f/formatters :basic-date ) (f/unparse (f/formatters :basic-date ) (c/from-date (:time oneitem)))))}}  1000 1)}))
 
     )
 
