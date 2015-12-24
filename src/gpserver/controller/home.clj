@@ -557,7 +557,7 @@
 
   (let [
         datetime (f/parse (f/formatters :date-time) time)
-        items (db/get-articles-by-cond  {:time { $lte (.toDate datetime) } :type type} 1 -1)
+        items (db/get-articles-by-cond  {:time { $lt (.toDate datetime) } :type type} 1 -1)
 
         oneitem (first items)
 
